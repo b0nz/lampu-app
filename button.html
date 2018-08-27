@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TOMBOL LAMPU</title>
+    <style>
+		body{
+			background:#000000;
+			margin:0;
+			padding-top:15%;}
+		.off{
+			background:#e74c3c;
+			border:none;
+			border-radius:5px;
+			color:#ffffff;
+			padding:20px;
+			width:150px;
+			font-size:30px;
+			cursor:pointer;
+		}
+		.off:active{background:#c0392b;color:#ffffff}
+		.on{
+			background:#2ecc71;
+			border:none;
+			border-radius:5px;
+			color:#ffffff;
+			padding:20px;
+			width:150px;
+			font-size:30px;
+			cursor:pointer;
+		}
+		.on:active{background:#27ae60;color:#ffffff}
+    </style>
+  </head>
+  <body>
+		<center>
+			<div id="button"></div>
+			<br>
+			<div style="color:green;"><b>STATUS : <span id="status"></span></b></div>
+		</center>
+		
+	<script src="asset/jquery.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/live/4.0/firebase.js"></script>
+    <script>
+		let config = {
+			apiKey: "AIzaSyDr58epUzYmKGF2Z4-cVg7kMYx98VSEjZU ",
+			authDomain: "https://lampu-c2ac7.firebaseapp.com",
+			databaseURL: "https://lampu-c2ac7.firebaseio.com",
+			projectId: "lampu-c2ac7",
+			storageBucket: "lampu-c2ac7.appspot.com",
+			messagingSenderId: "371507464085"
+		  };
+		firebase.initializeApp(config);
+		let db = firebase.database();
+		let rootRef = db.ref('/lampu');
+		
+		rootRef.on('value', function(snapshot) {
+			snapshot.forEach(function(data) {
+				data.val()=="on"?$('#button').fadeIn('slow').html('<input id="actionOff" class="off" type="button" value="OFF">'):$('#button').fadeIn('slow').html('<input id="actionOn" class="on" type="button" value="ON">');
+				$('#status').fadeIn('slow').html(data.val().toUpperCase());
+			});
+		});
+		
+		document.addEventListener('click', (e) => {
+		  let acct = e.target.parentNode;
+		  if (e.target.classList.contains('on')) {
+			  db.ref('lampu/').set({
+				tombol:"on",
+			  });
+		  }else if (e.target.classList.contains('off')) {
+			  db.ref('lampu/').set({
+				tombol:"off",
+			  });
+		  }
+		});
+    </script>
+    
+  </body>
+</html>
